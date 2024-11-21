@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/opc1"
+        android:title="Ver"/>
+    <item
+        android:id="@+id/opc2"
+        android:title="Autor"/>
+    <item
+        android:id="@+id/opc3"
+        android:title="Contacto"/>
+    <item
+        android:id="@+id/opc4"
+        android:title="Registrar"/>
+    <item
+        android:id="@+id/opc5"
+        android:title="Modificar"/>
+
+    <item android:id="@+id/opc6"
+        android:title="Eliminar"
+        app:showAsAction="always"
+        android:icon="@drawable/basura"></item>
+
+    <item android:id="@+id/wazaa"
+        android:title="Cerrar"
+        app:showAsAction="always"
+        android:icon="@drawable/bye"></item>
+</menu>
