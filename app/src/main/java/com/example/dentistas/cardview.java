@@ -77,15 +77,15 @@ public class cardview extends AppCompatActivity {
 
                                 // Establecer los datos en los TextView
                                 nomCompleto.setText(dentista.getString("nombre_completo"));
-                                licencia.setText("Licencia: " + dentista.optString("licencia", "N/A"));
-                                fechanacimiento.setText("Fecha de nacimiento: " + dentista.optString("fechanacimiento", "N/A"));
-                                telefono.setText("Teléfono: " + dentista.getString("telefono"));
-                                email.setText("Email: " + dentista.getString("email"));
-                                direccion.setText("Dirección: " + dentista.getString("direccion"));
-                                calificacion.setText("Calificación: " + dentista.getString("calificacion"));
-                                especialidad.setText("Especialidad: " + dentista.getString("especialidad"));
-                                horaapertura.setText("Hora de apertura: " + dentista.getString("hora_apertura"));
-                                horacierre.setText("Hora de cierre: " + dentista.getString("hora_cierre"));
+                                licencia.setText(dentista.optString("licencia", "N/A"));
+                                fechanacimiento.setText(dentista.optString("fecha_nacimiento", "N/A"));
+                                telefono.setText(dentista.getString("telefono"));
+                                email.setText(dentista.getString("email"));
+                                direccion.setText(dentista.getString("direccion"));
+                                calificacion.setText(dentista.getString("calificacion"));
+                                especialidad.setText(dentista.getString("especialidad"));
+                                horaapertura.setText(dentista.getString("hora_apertura"));
+                                horacierre.setText(dentista.getString("hora_cierre"));
                             } else {
                                 Toast.makeText(cardview.this, "No se encontró información del dentista", Toast.LENGTH_SHORT).show();
                             }
@@ -101,7 +101,6 @@ public class cardview extends AppCompatActivity {
                         Toast.makeText(cardview.this, "Error de conexión", Toast.LENGTH_SHORT).show();
                     }
                 });
-
         // Agregar la solicitud a la cola
         queue.add(request);
     }

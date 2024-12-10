@@ -21,6 +21,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 
 import global.info;
@@ -31,7 +41,7 @@ public class modificar extends AppCompatActivity {
     EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, horaapertura, horacierre, item10;
     Spinner spinner;
     Button anterior, actualizar, siguiente;
-    Integer posicion = -1;
+    Integer posicion = 1;
     Toolbar toolbar;
     SharedPreferences archivo;
     Spinner especialidad;
@@ -52,7 +62,7 @@ public class modificar extends AppCompatActivity {
         email =findViewById(R.id.email);
         direccion = findViewById(R.id.direccion);
         calificacion = findViewById(R.id.calificacion);
-        especialidad = findViewById(R.id.item7);
+        //especialidad = findViewById(R.id.item7);
         horaapertura = findViewById(R.id.horaapertura);
         horacierre = findViewById(R.id.horacierre);
         anterior = findViewById(R.id.anterior);
@@ -82,19 +92,19 @@ public class modificar extends AppCompatActivity {
             }
         });
 
-        especialidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String position, nombreSeleccion;
-
-                position = especialidad.getItemAtPosition(i).toString();
-                item10.setText(position);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        especialidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String position, nombreSeleccion;
+//
+//                position = especialidad.getItemAtPosition(i).toString();
+//                item10.setText(position);
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         siguiente();
         anterior.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +136,7 @@ public class modificar extends AppCompatActivity {
                 fechanacimiento.setText(cadena);
             }
         };
+        mostrarEquipo();
     }
     private void horaapertura() {
         int hr, min;
@@ -190,10 +201,9 @@ public class modificar extends AppCompatActivity {
         }
 
         posicion = (posicion + 1) % tamaño; // si sobrepasa vuelve a cero
-        mostrarEquipo();
+        //mostrarEquipo();
     }
     private void actualizar() {
-
         if (nomCompleto.getText().toString().trim().isEmpty() ||
                 licencia.getText().toString().trim().isEmpty() ||
                 fechanacimiento.getText().toString().trim().isEmpty() ||
@@ -214,7 +224,7 @@ public class modificar extends AppCompatActivity {
             equipoActual.setEmail(email.getText().toString());
             equipoActual.setDireccion(direccion.getText().toString());
             equipoActual.setCalificacion(calificacion.getText().toString());
-            equipoActual.setEspecialidad(item10.getText().toString());
+            //equipoActual.setEspecialidad(item10.getText().toString());
             equipoActual.setHoraapertura(horaapertura.getText().toString());
             equipoActual.setHoracierre(horacierre.getText().toString());
             Toast.makeText(this, "Dentista actualizado-", Toast.LENGTH_SHORT).show();
@@ -227,25 +237,59 @@ public class modificar extends AppCompatActivity {
             return;
         }
         posicion = (posicion - 1 + tamaño) % tamaño;
-        mostrarEquipo();
+        //mostrarEquipo();
     }
     private void mostrarEquipo() {
         dentista equipoActual = info.lista.get(posicion);
-
-        // Actualiza los campos con la información del equipo actual
-        nomCompleto.setText(equipoActual.getNombrecompleto());
-        licencia.setText(equipoActual.getLicencia());
-        fechanacimiento.setText(equipoActual.getFechanacimiento());
-        telefono.setText(equipoActual.getTelefono());
-        email.setText(equipoActual.getEmail());
-        direccion.setText(equipoActual.getDireccion());
-        calificacion.setText(equipoActual.getCalificacion());
-        item10.setText(equipoActual.getEspecialidad());
-        horaapertura.setText(equipoActual.getHoraapertura());
-        horacierre.setText(equipoActual.getHoracierre());
-        especialidad.setSelection(equipoActual.getPosicionSpinner());
-        // Mostrar el índice actual en un Toast (opcional, para depuración)
         Toast.makeText(this, "Posición " + posicion, Toast.LENGTH_SHORT).show();
+
+        int idDentista = 1;
+
+        String localhost = getString(R.string.localhost);
+        String url = localhost + "obtener_dentista.php?id_dentista=" + idDentista;
+
+        // Crear una cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Crear una solicitud JSON
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Verificar si la respuesta es exitosa
+                            if (response.getString("status").equals("success")) {
+                                JSONObject dentista = response.getJSONObject("data");
+
+                                // Establecer los datos en los TextView
+                                nomCompleto.setText(dentista.getString("nombre_completo"));
+                                licencia.setText(dentista.optString("licencia", "N/A"));
+                                fechanacimiento.setText(dentista.optString("fecha_nacimiento", "N/A"));
+                                telefono.setText(dentista.getString("telefono"));
+                                email.setText(dentista.getString("email"));
+                                direccion.setText(dentista.getString("direccion"));
+                                calificacion.setText(dentista.getString("calificacion"));
+                                //especialidad.setText(dentista.getString("especialidad"));
+                                horaapertura.setText(dentista.getString("hora_apertura"));
+                                horacierre.setText(dentista.getString("hora_cierre"));
+                            } else {
+                                Toast.makeText(modificar.this, "No se encontró información del dentista", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(modificar.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(modificar.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        // Agregar la solicitud a la cola
+        queue.add(request);
+
     }
     @Override
     public void onOptionsMenuClosed(Menu menu) {
