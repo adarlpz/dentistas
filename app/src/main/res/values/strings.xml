@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">dentistas</string>
-    <string name="localhost">http://192.168.208.174/dentistas/</string>
+    <string name="localhost">http://192.168.137.186/dentistas/</string>
     <string-array name="array">
         <item>Default</item>
         <item>Anestesiología dental</item>

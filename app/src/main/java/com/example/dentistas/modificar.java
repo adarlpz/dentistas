@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -39,9 +38,9 @@ import pojo.dentista;
 
 public class modificar extends AppCompatActivity {
     EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, horaapertura, horacierre, item10;
-    Spinner spinner;
     Button anterior, actualizar, siguiente;
     Integer posicion = 1;
+    Integer tamaño = 1;
     Toolbar toolbar;
     SharedPreferences archivo;
     Spinner especialidad;
@@ -105,8 +104,7 @@ public class modificar extends AppCompatActivity {
 //
 //            }
 //        });
-
-        siguiente();
+        //siguiente();
         anterior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,15 +192,21 @@ public class modificar extends AppCompatActivity {
     }
 
     private void siguiente() {
-        Integer tamaño = info.lista.size();
         if (tamaño == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
         }
+        // Incrementamos la posición
+        posicion++;
+        // Si la posición supera el tamaño de la lista, volvemos al inicio
+        if (posicion >= tamaño) {
+            posicion = 0;
+        }
 
-        posicion = (posicion + 1) % tamaño; // si sobrepasa vuelve a cero
-        //mostrarEquipo();
+        // Mostrar el dentista actual
+        mostrarEquipo();
     }
+
     private void actualizar() {
         if (nomCompleto.getText().toString().trim().isEmpty() ||
                 licencia.getText().toString().trim().isEmpty() ||
@@ -231,7 +235,6 @@ public class modificar extends AppCompatActivity {
         }
     }
     private void anterior() {
-        Integer tamaño = info.lista.size();
         if (tamaño == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
@@ -240,18 +243,12 @@ public class modificar extends AppCompatActivity {
         //mostrarEquipo();
     }
     private void mostrarEquipo() {
-        dentista equipoActual = info.lista.get(posicion);
-        Toast.makeText(this, "Posición " + posicion, Toast.LENGTH_SHORT).show();
-
-        int idDentista = 1;
+        String idDentistaString = String.valueOf(posicion);
 
         String localhost = getString(R.string.localhost);
-        String url = localhost + "obtener_dentista.php?id_dentista=" + idDentista;
+        String url = localhost + "obtener_dentista.php?id_dentista=" + idDentistaString;
 
-        // Crear una cola de solicitudes
         RequestQueue queue = Volley.newRequestQueue(this);
-
-        // Crear una solicitud JSON
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -260,6 +257,7 @@ public class modificar extends AppCompatActivity {
                             // Verificar si la respuesta es exitosa
                             if (response.getString("status").equals("success")) {
                                 JSONObject dentista = response.getJSONObject("data");
+                                tamaño = response.getInt("total"); // Obtener el total de dentistas
 
                                 // Establecer los datos en los TextView
                                 nomCompleto.setText(dentista.getString("nombre_completo"));
@@ -272,6 +270,9 @@ public class modificar extends AppCompatActivity {
                                 //especialidad.setText(dentista.getString("especialidad"));
                                 horaapertura.setText(dentista.getString("hora_apertura"));
                                 horacierre.setText(dentista.getString("hora_cierre"));
+
+                                Toast.makeText(modificar.this, "" + tamaño, Toast.LENGTH_SHORT).show();
+
                             } else {
                                 Toast.makeText(modificar.this, "No se encontró información del dentista", Toast.LENGTH_SHORT).show();
                             }
