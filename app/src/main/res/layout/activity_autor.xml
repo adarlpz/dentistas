@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,6 +27,31 @@
             android:layout_gravity="center"
             android:gravity="center">
         </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="22100190 6A1"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:gravity="center">
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="a22100190@ceti.mx"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:gravity="center">
+        </TextView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"></View>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/fotito">
+
+            </ImageView>
     </LinearLayout>
 
 </LinearLayout>

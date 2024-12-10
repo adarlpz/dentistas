@@ -10,6 +10,17 @@ public class dentista {
     public String especialidad;
     public String horaapertura;
     public String horacierre;
+
+    public Integer posicionSpinner;
+
+    public Integer getPosicionSpinner() {
+        return posicionSpinner;
+    }
+
+    public void setPosicionSpinner(Integer posicionSpinner) {
+        this.posicionSpinner = posicionSpinner;
+    }
+
     private boolean isChecked;
     public String getFechanacimiento() {
         return fechanacimiento;

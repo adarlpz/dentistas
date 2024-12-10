@@ -22,6 +22,10 @@
         app:showAsAction="always"
         android:icon="@drawable/basura"></item>
 
+    <item
+        android:id="@+id/opc7"
+        android:title="Ayuda"/>
+
     <item android:id="@+id/wazaa"
         android:title="Cerrar"
         app:showAsAction="always"

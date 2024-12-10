@@ -1,7 +1,6 @@
 package com.example.dentistas;
 
 import static global.info.lista;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,11 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import adaptador.adaptadoreliminar;
+import global.info;
 import pojo.dentista;
 
 public class ver2 extends AppCompatActivity {
@@ -47,17 +46,19 @@ public class ver2 extends AppCompatActivity {
         rv2.setAdapter(av);
 
     }
-
     public void del(View view) {
         List<dentista> itemsParaEliminar = new ArrayList<>();
         for (int i = 0; i < lista.size(); i++) {
             dentista item = lista.get(i);
             if (item.isChecked()) {
                 itemsParaEliminar.add(item);
+                rv2.getAdapter().notifyDataSetChanged();
+                lista.removeAll(itemsParaEliminar);
+                Toast.makeText(this,"Elementos eliminados exitosamente",Toast.LENGTH_SHORT).show();
+            }else   {
+                Toast.makeText(this, "No has seleccionado ningun elemento para eliminar", Toast.LENGTH_SHORT).show();
             }
         }
-        rv2.getAdapter().notifyDataSetChanged();
-        lista.removeAll(itemsParaEliminar);
     }
     @Override
     public void onOptionsMenuClosed(Menu menu) {
@@ -107,5 +108,4 @@ public class ver2 extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

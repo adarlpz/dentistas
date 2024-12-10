@@ -7,10 +7,19 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:id="@+id/theview"
         android:textSize="35sp"
         android:clickable="true"
+        android:text="prueba"
          />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/thedescription"
+        android:textSize="20sp"
+        android:clickable="true"
+        android:text="prueba"
+        />
 
 </LinearLayout>

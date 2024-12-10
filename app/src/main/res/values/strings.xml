@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">dentistas</string>
+    <string name="localhost">http://192.168.0.128/dentistas/</string>
+    <string-array name="array">
+        <item>Default</item>
+        <item>Anestesiología dental</item>
+        <item>Odontología de salud pública</item>
+        <item>Endodoncia</item>
+        <item>Patología oral y maxilofacial</item>
+        <item>Radiología oral y maxilofacial</item>
+        <item>Cirugía oral y maxilofacial</item>
+        <item>Medicina oral</item>
+        <item>Ortodoncia y ortopedia dentofacial</item>
+        <item>Especialista en dolor orofacial</item>
+        <item>Odontología pediátrica</item>
+        <item>Periodoncia</item>
+        <item>Prostodoncia</item>
+    </string-array>
+
+
+
 </resources>

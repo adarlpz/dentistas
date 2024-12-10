@@ -65,6 +65,10 @@ public class contacto extends AppCompatActivity {
             Intent cambio = new Intent(this, ver2.class);
             startActivity(cambio);
         }
+        if(item.getItemId()==R.id.opc7){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
         if(item.getItemId()==R.id.wazaa){
             if(archivo.contains("id_usuario"))  {
                 SharedPreferences.Editor editor =  archivo.edit();

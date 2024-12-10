@@ -50,11 +50,10 @@ public class inicio extends AppCompatActivity {
                 ingresar();
             }
         });
-
     }
-
     private void ingresar() {
-        String url = "http://192.168.56.1/dentistas/ingreso.php?usr=";
+        String localhost = getString(R.string.localhost);
+        String url = localhost + "ingreso.php?usr=";
         url = url+user.getText().toString();
         url = url+"&pass=";
         url = url+pass.getText().toString();
@@ -89,21 +88,6 @@ public class inicio extends AppCompatActivity {
         });
         RequestQueue lanzarPeticion = Volley.newRequestQueue(this);
         lanzarPeticion.add(pet);
-//        if(user.getText().toString().equals("GUSA") && pass.getText().toString().equals("123456")){
-//            Intent in = new Intent(this, MainActivity.class);
-//            SharedPreferences.Editor editor = archivo.edit();
-//            editor.putString("usuario", "GUSA");
-//            editor.putString("contra", "123456");
-//            editor.putBoolean("valido", true);
-//            editor.apply();
-//            //editor.commit();
-//            startActivity(in);
-//            finish();
-//        }else{
-//            user.setText("");
-//            pass.setText("");
-//            Toast.makeText(this, "incorrecto", Toast.LENGTH_LONG);
-//        }
     }
 
 }

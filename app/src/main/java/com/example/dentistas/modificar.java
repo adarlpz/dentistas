@@ -1,5 +1,7 @@
 package com.example.dentistas;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,25 +9,35 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Calendar;
+
 import global.info;
+import pojo.datos;
 import pojo.dentista;
 
 public class modificar extends AppCompatActivity {
-    EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, especialidad, horaapertura, horacierre;
+    EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, horaapertura, horacierre, item10;
+    Spinner spinner;
     Button anterior, actualizar, siguiente;
     Integer posicion = -1;
     Toolbar toolbar;
     SharedPreferences archivo;
+    Spinner especialidad;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
+    datos dat = new datos();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,24 +52,57 @@ public class modificar extends AppCompatActivity {
         email =findViewById(R.id.email);
         direccion = findViewById(R.id.direccion);
         calificacion = findViewById(R.id.calificacion);
-        especialidad = findViewById(R.id.especialidad);
+        especialidad = findViewById(R.id.item7);
         horaapertura = findViewById(R.id.horaapertura);
         horacierre = findViewById(R.id.horacierre);
         anterior = findViewById(R.id.anterior);
         actualizar = findViewById(R.id.actualizar);
         siguiente = findViewById(R.id.siguiente);
+
         toolbar = findViewById(R.id.toolbar);
+        item10 = findViewById(R.id.item10);
         setSupportActionBar(toolbar);
 
-        siguiente();
+        fechanacimiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fechanacimiento();
+            }
+        });
+        horaapertura.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                horaapertura();
+            }
+        });
+        horacierre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                horacierre();
+            }
+        });
 
+        especialidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String position, nombreSeleccion;
+
+                position = especialidad.getItemAtPosition(i).toString();
+                item10.setText(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        siguiente();
         anterior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 anterior();
             }
         });
-
         actualizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +115,71 @@ public class modificar extends AppCompatActivity {
                 siguiente();
             }
         });
+        mDateSetListener= new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayofMonth) {
+                dat.dia=dayofMonth;
+                dat.mes=month+1;
+                dat.ano=year;
+                String cadena;
+                cadena = " "+dat.dia+"/"+dat.mes+"/"+dat.ano;
+                fechanacimiento.setText(cadena);
+            }
+        };
+    }
+    private void horaapertura() {
+        int hr, min;
+        Calendar actual = Calendar.getInstance();
+        hr = actual.get(Calendar.HOUR_OF_DAY);
+        min = actual.get(Calendar.MINUTE);
+        TimePickerDialog tpd = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourofday, int minute) {
+                dat.minutos = minute;
+                dat.horas = hourofday;
+                String cadena;
+                cadena = " " + dat.horas + ":" + dat.minutos;
+                horaapertura.setText(cadena);
+            }
+        },hr,min,true);
+        tpd.show();
+    }
+    private void horacierre() {
+        int hr, min;
+        Calendar actual = Calendar.getInstance();
+        hr = actual.get(Calendar.HOUR_OF_DAY);
+        min = actual.get(Calendar.MINUTE);
+        TimePickerDialog tpd = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hourofday, int minute) {
+                dat.minutos = minute;
+                dat.horas = hourofday;
+                String cadena;
+                cadena = " " + dat.horas + ":" + dat.minutos;
+                horacierre.setText(cadena);
+            }
+        },hr,min,true);
+        tpd.show();
+    }
+    private void fechanacimiento() {
+        int dia, mes, ayo;
+        Calendar actual=Calendar.getInstance();
+        dia=actual.get(Calendar.DAY_OF_MONTH);
+        mes=actual.get(Calendar.MONTH);
+        ayo=actual.get(Calendar.YEAR);
+        DatePickerDialog datPD = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int dayofmonth) {
+                dat.dia=dayofmonth;
+                dat.mes=month + 1; //los meses empiezan en 0
+                dat.ano=year;
+                String cadena;
 
+                cadena = " " + dat.dia + "/" + dat.mes + "/" + dat.ano;
+                fechanacimiento.setText(cadena);
+            }
+        }, ayo, mes, dia);
+        datPD.show();
     }
 
     private void siguiente() {
@@ -84,17 +193,32 @@ public class modificar extends AppCompatActivity {
         mostrarEquipo();
     }
     private void actualizar() {
-        dentista equipoActual = info.lista.get(posicion);
-        equipoActual.setNombrecompleto(nomCompleto.getText().toString());
-        equipoActual.setLicencia(licencia.getText().toString());
-        equipoActual.setFechanacimiento(fechanacimiento.getText().toString());
-        equipoActual.setTelefono(telefono.getText().toString());
-        equipoActual.setEmail(email.getText().toString());
-        equipoActual.setDireccion(direccion.getText().toString());
-        equipoActual.setCalificacion(calificacion.getText().toString());
-        equipoActual.setEspecialidad(especialidad.getText().toString());
-        equipoActual.setHoraapertura(horaapertura.getText().toString());
-        equipoActual.setHoracierre(horacierre.getText().toString());
+
+        if (nomCompleto.getText().toString().trim().isEmpty() ||
+                licencia.getText().toString().trim().isEmpty() ||
+                fechanacimiento.getText().toString().trim().isEmpty() ||
+                telefono.getText().toString().trim().isEmpty() ||
+                email.getText().toString().trim().isEmpty() ||
+                direccion.getText().toString().trim().isEmpty() ||
+                calificacion.getText().toString().trim().isEmpty() ||
+                horaapertura.getText().toString().trim().isEmpty() ||
+                horacierre.getText().toString().trim().isEmpty()) {
+
+            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
+        } else  {
+            dentista equipoActual = info.lista.get(posicion);
+            equipoActual.setNombrecompleto(nomCompleto.getText().toString());
+            equipoActual.setLicencia(licencia.getText().toString());
+            equipoActual.setFechanacimiento(fechanacimiento.getText().toString());
+            equipoActual.setTelefono(telefono.getText().toString());
+            equipoActual.setEmail(email.getText().toString());
+            equipoActual.setDireccion(direccion.getText().toString());
+            equipoActual.setCalificacion(calificacion.getText().toString());
+            equipoActual.setEspecialidad(item10.getText().toString());
+            equipoActual.setHoraapertura(horaapertura.getText().toString());
+            equipoActual.setHoracierre(horacierre.getText().toString());
+            Toast.makeText(this, "Dentista actualizado-", Toast.LENGTH_SHORT).show();
+        }
     }
     private void anterior() {
         Integer tamaño = info.lista.size();
@@ -116,13 +240,13 @@ public class modificar extends AppCompatActivity {
         email.setText(equipoActual.getEmail());
         direccion.setText(equipoActual.getDireccion());
         calificacion.setText(equipoActual.getCalificacion());
-        especialidad.setText(equipoActual.getEspecialidad());
+        item10.setText(equipoActual.getEspecialidad());
         horaapertura.setText(equipoActual.getHoraapertura());
         horacierre.setText(equipoActual.getHoracierre());
+        especialidad.setSelection(equipoActual.getPosicionSpinner());
         // Mostrar el índice actual en un Toast (opcional, para depuración)
-        Toast.makeText(this, "P" + posicion, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Posición " + posicion, Toast.LENGTH_SHORT).show();
     }
-
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -159,6 +283,10 @@ public class modificar extends AppCompatActivity {
             Intent cambio = new Intent(this, ver2.class);
             startActivity(cambio);
         }
+        if(item.getItemId()==R.id.opc7){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
         if(item.getItemId()==R.id.wazaa){
             if(archivo.contains("id_usuario"))  {
                 SharedPreferences.Editor editor =  archivo.edit();
@@ -168,18 +296,7 @@ public class modificar extends AppCompatActivity {
                 startActivity(x);
                 finish();
             }
-//            if(archivo.contains("usuario") && archivo.contains("contra")){
-//                SharedPreferences.Editor editor = archivo.edit();
-//                editor.remove("usuario");
-//                editor.remove("contra");
-//                editor.remove("valida");
-//                editor.commit();
-//                Intent fin = new Intent(this, inicio.class);
-//                startActivity(fin);
-//                finish();
-//            }
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
