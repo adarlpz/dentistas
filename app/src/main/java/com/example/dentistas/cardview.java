@@ -46,7 +46,7 @@ public class cardview extends AppCompatActivity {
 
         // Obtener el ID del dentista seleccionado del Intent
         Intent intent = getIntent();
-        int idDentista = intent.getIntExtra("id_dentista", 1);
+        int idDentista = intent.getIntExtra("posicion", 0);
 
         Toast.makeText(this, " " + idDentista, Toast.LENGTH_SHORT).show();
 

@@ -1,25 +1,35 @@
 package com.example.dentistas;
 
-import static global.info.lista;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import adaptador.adaptadoreliminar;
-import global.info;
 import pojo.dentista;
 
 public class ver2 extends AppCompatActivity {
@@ -27,49 +37,97 @@ public class ver2 extends AppCompatActivity {
     Context context;
     Toolbar toolbar;
     SharedPreferences archivo;
+    List<dentista> dentistasList = new ArrayList<>();
+    adaptadoreliminar adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ver2);
 
         archivo = this.getSharedPreferences("sesion", MODE_PRIVATE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        rv2=findViewById(R.id.rv_lista2);
-        adaptadoreliminar av = new adaptadoreliminar();
-        av.context=this;
-        LinearLayoutManager llm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rv2.setLayoutManager(llm);
-        rv2.setAdapter(av);
+        rv2 = findViewById(R.id.rv_lista2);
 
+        // Inicializar el adaptador con el contexto y la lista
+        adapter = new adaptadoreliminar(this, dentistasList);
+        rv2.setLayoutManager(new LinearLayoutManager(this));
+        rv2.setAdapter(adapter);
+
+        // Cargar los datos desde el servidor
+        cargarDatos();
     }
+
     public void del(View view) {
         List<dentista> itemsParaEliminar = new ArrayList<>();
-        for (int i = 0; i < lista.size(); i++) {
-            dentista item = lista.get(i);
+
+        for (dentista item : dentistasList) {
             if (item.isChecked()) {
                 itemsParaEliminar.add(item);
-                rv2.getAdapter().notifyDataSetChanged();
-                lista.removeAll(itemsParaEliminar);
-                Toast.makeText(this,"Elementos eliminados exitosamente",Toast.LENGTH_SHORT).show();
-            }else   {
-                Toast.makeText(this, "No has seleccionado ningun elemento para eliminar", Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (!itemsParaEliminar.isEmpty()) {
+            dentistasList.removeAll(itemsParaEliminar);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(this, "Elementos eliminados exitosamente", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No has seleccionado ningún elemento para eliminar", Toast.LENGTH_SHORT).show();
+        }
     }
-    @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        super.onOptionsMenuClosed(menu);
+
+    private void cargarDatos() {
+        String localhost = getString(R.string.localhost);
+        String url = localhost + "obtener_dentistas.php";
+
+        Log.d("URL", url); // Verificar URL
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String status = response.getString("status");
+                        if (status.equals("success")) {
+                            JSONArray dataArray = response.getJSONArray("data");
+
+                            dentistasList.clear();
+
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject dentistaObj = dataArray.getJSONObject(i);
+
+                                dentista dentistaItem = new dentista();
+                                dentistaItem.setNombrecompleto(dentistaObj.getString("nombre_completo"));
+                                dentistaItem.setEspecialidad(dentistaObj.getString("especialidad"));
+
+                                dentistasList.add(dentistaItem);
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            String message = response.getString("message");
+                            Toast.makeText(ver2.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ver2.this, "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e("VolleyError", "Error en la solicitud: " + error.getMessage());
+                    Toast.makeText(ver2.this, "Error de red: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.opc1){
@@ -94,6 +152,10 @@ public class ver2 extends AppCompatActivity {
         }
         if(item.getItemId()==R.id.opc6){
             Intent cambio = new Intent(this, ver2.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc7){
+            Intent cambio = new Intent(this, ayuda.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.wazaa){

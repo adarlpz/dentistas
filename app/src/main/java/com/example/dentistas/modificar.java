@@ -6,41 +6,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Calendar;
-
-import global.info;
+import java.util.HashMap;
+import java.util.Map;
 import pojo.datos;
-import pojo.dentista;
 
 public class modificar extends AppCompatActivity {
     EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, horaapertura, horacierre, item10;
     Button anterior, actualizar, siguiente;
-    Integer posicion = 1;
-    Integer tamaño = 1;
+    Integer posicion;
+    Integer tamaño;
+    TextView tama;
     Toolbar toolbar;
     SharedPreferences archivo;
     Spinner especialidad;
@@ -61,16 +62,18 @@ public class modificar extends AppCompatActivity {
         email =findViewById(R.id.email);
         direccion = findViewById(R.id.direccion);
         calificacion = findViewById(R.id.calificacion);
-        //especialidad = findViewById(R.id.item7);
+        especialidad = findViewById(R.id.item7);
         horaapertura = findViewById(R.id.horaapertura);
         horacierre = findViewById(R.id.horacierre);
         anterior = findViewById(R.id.anterior);
         actualizar = findViewById(R.id.actualizar);
         siguiente = findViewById(R.id.siguiente);
-
         toolbar = findViewById(R.id.toolbar);
         item10 = findViewById(R.id.item10);
         setSupportActionBar(toolbar);
+
+        posicion = 0;
+        tama = findViewById(R.id.tamaño);
 
         fechanacimiento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,20 +94,18 @@ public class modificar extends AppCompatActivity {
             }
         });
 
-//        especialidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String position, nombreSeleccion;
-//
-//                position = especialidad.getItemAtPosition(i).toString();
-//                item10.setText(position);
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-        //siguiente();
+        especialidad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String position;
+                position = especialidad.getItemAtPosition(i).toString();
+                item10.setText(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         anterior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,57 +191,130 @@ public class modificar extends AppCompatActivity {
         }, ayo, mes, dia);
         datPD.show();
     }
-
     private void siguiente() {
-        if (tamaño == 0) {
+        String tam;
+        tam = tama.getText().toString();
+        int tama = Integer.parseInt(tam);
+
+        Toast.makeText(this, "" + posicion + "" + tama, Toast.LENGTH_SHORT).show();
+
+        if (tama == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Incrementamos la posición
         posicion++;
+        // Incrementamos la posición
         // Si la posición supera el tamaño de la lista, volvemos al inicio
-        if (posicion >= tamaño) {
+        if (posicion >= tama) {
             posicion = 0;
         }
 
         // Mostrar el dentista actual
         mostrarEquipo();
     }
-
     private void actualizar() {
-        if (nomCompleto.getText().toString().trim().isEmpty() ||
-                licencia.getText().toString().trim().isEmpty() ||
-                fechanacimiento.getText().toString().trim().isEmpty() ||
-                telefono.getText().toString().trim().isEmpty() ||
-                email.getText().toString().trim().isEmpty() ||
-                direccion.getText().toString().trim().isEmpty() ||
-                calificacion.getText().toString().trim().isEmpty() ||
-                horaapertura.getText().toString().trim().isEmpty() ||
-                horacierre.getText().toString().trim().isEmpty()) {
+        // Obtener los datos editados del formulario
+        String nombre = nomCompleto.getText().toString().trim();
+        String lic = licencia.getText().toString().trim();
+        String fecha = fechanacimiento.getText().toString().trim();
+        String telefon = telefono.getText().toString().trim();
+        String mail = email.getText().toString().trim();
+        String dir = direccion.getText().toString().trim();
+        String cali = calificacion.getText().toString().trim();
+        String especialidad = item10.getText().toString().trim();
+        String horaApertura = horaapertura.getText().toString().trim();
+        String horaCierre = horacierre.getText().toString().trim();
 
-            Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
-        } else  {
-            dentista equipoActual = info.lista.get(posicion);
-            equipoActual.setNombrecompleto(nomCompleto.getText().toString());
-            equipoActual.setLicencia(licencia.getText().toString());
-            equipoActual.setFechanacimiento(fechanacimiento.getText().toString());
-            equipoActual.setTelefono(telefono.getText().toString());
-            equipoActual.setEmail(email.getText().toString());
-            equipoActual.setDireccion(direccion.getText().toString());
-            equipoActual.setCalificacion(calificacion.getText().toString());
-            //equipoActual.setEspecialidad(item10.getText().toString());
-            equipoActual.setHoraapertura(horaapertura.getText().toString());
-            equipoActual.setHoracierre(horacierre.getText().toString());
-            Toast.makeText(this, "Dentista actualizado-", Toast.LENGTH_SHORT).show();
+        // Logcat para verificar los valores obtenidos
+        Log.d("Actualizar", "Nombre: " + nombre);
+        Log.d("Actualizar", "Licencia: " + lic);
+        Log.d("Actualizar", "Fecha de nacimiento: " + fecha);
+        Log.d("Actualizar", "Teléfono: " + telefon);
+        Log.d("Actualizar", "Email: " + mail);
+        Log.d("Actualizar", "Dirección: " + dir);
+        Log.d("Actualizar", "Calificación: " + cali);
+        Log.d("Actualizar", "Especialidad: " + especialidad);
+        Log.d("Actualizar", "Hora de apertura: " + horaApertura);
+        Log.d("Actualizar", "Hora de cierre: " + horaCierre);
+
+        // Validar que no haya campos vacíos
+        if (nombre.isEmpty() || lic.isEmpty() || fecha.isEmpty() || telefon.isEmpty() || mail.isEmpty() ||
+                dir.isEmpty() || horaApertura.isEmpty() || horaCierre.isEmpty()) {
+            Toast.makeText(this, "Por favor, completa todos los campos obligatorios.", Toast.LENGTH_SHORT).show();
+            Log.d("Actualizar", "Error: Hay campos vacíos.");
+            return;
         }
+
+        // Crear un objeto JSON con los datos del formulario
+        Map<String, String> params = new HashMap<>();
+        params.put("nombre_completo", nombre);
+        params.put("licencia", lic);
+        params.put("fecha_nacimiento", fecha);
+        params.put("telefono", telefon);
+        params.put("email", mail);
+        params.put("direccion", dir);
+        params.put("calificacion", cali);
+        params.put("especialidad", especialidad);
+        params.put("hora_apertura", horaApertura);
+        params.put("hora_cierre", horaCierre);
+
+        JSONObject jsonObject = new JSONObject(params);
+
+        // Logcat para verificar el objeto JSON
+        Log.d("Actualizar", "JSON enviado: " + jsonObject.toString());
+
+        String idDentistaString = String.valueOf(posicion + 1);
+        String localhost = getString(R.string.localhost);
+        String url = localhost + "actualizar_dentista.php?id=" + idDentistaString;
+
+        // Logcat para verificar la URL
+        Log.d("Actualizar", "URL: " + url);
+
+        // Usar JsonObjectRequest para enviar los datos al servidor
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                jsonObject,
+                response -> {
+                    try {
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        // Logcat para verificar la respuesta del servidor
+                        Log.d("Actualizar", "Respuesta del servidor: " + response.toString());
+
+                        if (status.equals("success")) {
+                            Toast.makeText(this, "Datos actualizados correctamente.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error al procesar la respuesta del servidor.", Toast.LENGTH_SHORT).show();
+                        Log.e("Actualizar", "Error al procesar la respuesta del servidor", e);
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    Toast.makeText(this, "Error en la solicitud: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("Actualizar", "Error en la solicitud", error);
+                }
+        );
+
+        // Agregar la solicitud a la cola de Volley
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
+
+
     private void anterior() {
         if (tamaño == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
         }
         posicion = (posicion - 1 + tamaño) % tamaño;
-        //mostrarEquipo();
+        Toast.makeText(this, "" + posicion, Toast.LENGTH_SHORT).show();
+        mostrarEquipo();
     }
     private void mostrarEquipo() {
         String idDentistaString = String.valueOf(posicion);
@@ -254,10 +328,9 @@ public class modificar extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            // Verificar si la respuesta es exitosa
                             if (response.getString("status").equals("success")) {
                                 JSONObject dentista = response.getJSONObject("data");
-                                tamaño = response.getInt("total"); // Obtener el total de dentistas
+                                tamaño = response.getInt("total");
 
                                 // Establecer los datos en los TextView
                                 nomCompleto.setText(dentista.getString("nombre_completo"));
@@ -267,12 +340,22 @@ public class modificar extends AppCompatActivity {
                                 email.setText(dentista.getString("email"));
                                 direccion.setText(dentista.getString("direccion"));
                                 calificacion.setText(dentista.getString("calificacion"));
-                                //especialidad.setText(dentista.getString("especialidad"));
                                 horaapertura.setText(dentista.getString("hora_apertura"));
                                 horacierre.setText(dentista.getString("hora_cierre"));
 
-                                Toast.makeText(modificar.this, "" + tamaño, Toast.LENGTH_SHORT).show();
+                                // Obtener la especialidad del dentista desde el servidor
+                                String especialidadActual = dentista.getString("especialidad");
 
+                                // Buscar la posición de la especialidad en el adaptador del Spinner
+                                ArrayAdapter adapter = (ArrayAdapter) especialidad.getAdapter();
+                                int position = adapter.getPosition(especialidadActual);
+
+                                // Seleccionar la especialidad en el Spinner
+                                if (position >= 0) { // Asegurarse de que la posición sea válida
+                                    especialidad.setSelection(position);
+                                }
+
+                                tama.setText("" + tamaño);
                             } else {
                                 Toast.makeText(modificar.this, "No se encontró información del dentista", Toast.LENGTH_SHORT).show();
                             }
@@ -288,10 +371,9 @@ public class modificar extends AppCompatActivity {
                         Toast.makeText(modificar.this, "Error de conexión", Toast.LENGTH_SHORT).show();
                     }
                 });
-        // Agregar la solicitud a la cola
         queue.add(request);
-
     }
+
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
