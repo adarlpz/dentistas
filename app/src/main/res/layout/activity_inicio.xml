@@ -10,6 +10,18 @@
     android:layout_gravity="center"
     android:gravity="center">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/latobold"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Ingrese sus credenciales para ingresar"
+            android:layout_marginBottom="25dp">
+
+        </TextView>
+
     <EditText
         android:id="@+id/user"
         android:layout_width="wrap_content"

@@ -6,14 +6,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class autor extends AppCompatActivity {
     Toolbar toolbar;
@@ -46,27 +42,23 @@ public class autor extends AppCompatActivity {
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc2){
-            Intent cambio = new Intent(this, autor.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc3){
-            Intent cambio = new Intent(this, contacto.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc4){
             Intent cambio = new Intent(this, MainActivity.class);
             startActivity(cambio);
         }
-        if(item.getItemId()==R.id.opc5){
+        if(item.getItemId()==R.id.opc3){
             Intent cambio = new Intent(this, modificar.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc4){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc5){
+            Intent cambio = new Intent(this, autor.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc6){
             Intent cambio = new Intent(this, ver2.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc7){
-            Intent cambio = new Intent(this, ayuda.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.wazaa){

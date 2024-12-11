@@ -196,19 +196,14 @@ public class modificar extends AppCompatActivity {
         tam = tama.getText().toString();
         int tama = Integer.parseInt(tam);
 
-        Toast.makeText(this, "" + posicion + "" + tama, Toast.LENGTH_SHORT).show();
-
         if (tama == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
         }
         posicion++;
-        // Incrementamos la posición
-        // Si la posición supera el tamaño de la lista, volvemos al inicio
         if (posicion >= tama) {
             posicion = 0;
         }
-
         // Mostrar el dentista actual
         mostrarEquipo();
     }
@@ -225,27 +220,12 @@ public class modificar extends AppCompatActivity {
         String horaApertura = horaapertura.getText().toString().trim();
         String horaCierre = horacierre.getText().toString().trim();
 
-        // Logcat para verificar los valores obtenidos
-        Log.d("Actualizar", "Nombre: " + nombre);
-        Log.d("Actualizar", "Licencia: " + lic);
-        Log.d("Actualizar", "Fecha de nacimiento: " + fecha);
-        Log.d("Actualizar", "Teléfono: " + telefon);
-        Log.d("Actualizar", "Email: " + mail);
-        Log.d("Actualizar", "Dirección: " + dir);
-        Log.d("Actualizar", "Calificación: " + cali);
-        Log.d("Actualizar", "Especialidad: " + especialidad);
-        Log.d("Actualizar", "Hora de apertura: " + horaApertura);
-        Log.d("Actualizar", "Hora de cierre: " + horaCierre);
-
-        // Validar que no haya campos vacíos
         if (nombre.isEmpty() || lic.isEmpty() || fecha.isEmpty() || telefon.isEmpty() || mail.isEmpty() ||
                 dir.isEmpty() || horaApertura.isEmpty() || horaCierre.isEmpty()) {
             Toast.makeText(this, "Por favor, completa todos los campos obligatorios.", Toast.LENGTH_SHORT).show();
             Log.d("Actualizar", "Error: Hay campos vacíos.");
             return;
         }
-
-        // Crear un objeto JSON con los datos del formulario
         Map<String, String> params = new HashMap<>();
         params.put("nombre_completo", nombre);
         params.put("licencia", lic);
@@ -257,31 +237,15 @@ public class modificar extends AppCompatActivity {
         params.put("especialidad", especialidad);
         params.put("hora_apertura", horaApertura);
         params.put("hora_cierre", horaCierre);
-
         JSONObject jsonObject = new JSONObject(params);
 
-        // Logcat para verificar el objeto JSON
-        Log.d("Actualizar", "JSON enviado: " + jsonObject.toString());
-
-        String idDentistaString = String.valueOf(posicion + 1);
+        String idDentistaString = String.valueOf(posicion);
         String localhost = getString(R.string.localhost);
         String url = localhost + "actualizar_dentista.php?id=" + idDentistaString;
-
-        // Logcat para verificar la URL
-        Log.d("Actualizar", "URL: " + url);
-
-        // Usar JsonObjectRequest para enviar los datos al servidor
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                jsonObject,
-                response -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, response -> {
                     try {
                         String status = response.getString("status");
                         String message = response.getString("message");
-
-                        // Logcat para verificar la respuesta del servidor
-                        Log.d("Actualizar", "Respuesta del servidor: " + response.toString());
 
                         if (status.equals("success")) {
                             Toast.makeText(this, "Datos actualizados correctamente.", Toast.LENGTH_SHORT).show();
@@ -300,25 +264,19 @@ public class modificar extends AppCompatActivity {
                     Log.e("Actualizar", "Error en la solicitud", error);
                 }
         );
-
-        // Agregar la solicitud a la cola de Volley
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
-
-
     private void anterior() {
         if (tamaño == 0) {
             Toast.makeText(this, "Lista vacía", Toast.LENGTH_SHORT).show();
             return;
         }
         posicion = (posicion - 1 + tamaño) % tamaño;
-        Toast.makeText(this, "" + posicion, Toast.LENGTH_SHORT).show();
         mostrarEquipo();
     }
     private void mostrarEquipo() {
         String idDentistaString = String.valueOf(posicion);
-
         String localhost = getString(R.string.localhost);
         String url = localhost + "obtener_dentista.php?id_dentista=" + idDentistaString;
 
@@ -373,7 +331,6 @@ public class modificar extends AppCompatActivity {
                 });
         queue.add(request);
     }
-
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -391,27 +348,23 @@ public class modificar extends AppCompatActivity {
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc2){
-            Intent cambio = new Intent(this, autor.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc3){
-            Intent cambio = new Intent(this, contacto.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc4){
             Intent cambio = new Intent(this, MainActivity.class);
             startActivity(cambio);
         }
-        if(item.getItemId()==R.id.opc5){
+        if(item.getItemId()==R.id.opc3){
             Intent cambio = new Intent(this, modificar.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc4){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc5){
+            Intent cambio = new Intent(this, autor.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc6){
             Intent cambio = new Intent(this, ver2.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc7){
-            Intent cambio = new Intent(this, ayuda.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.wazaa){

@@ -25,14 +25,11 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 public class inicio extends AppCompatActivity {
-
     EditText user, pass;
     Button ingresar;
     Context context;
     SharedPreferences archivo;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,13 +65,14 @@ public class inicio extends AppCompatActivity {
                         SharedPreferences.Editor editor = archivo.edit();
                         editor.putInt("id_usuario", response.getInt("usr"));
                         editor.commit();
+                        Toast.makeText(inicio.this, "Bienvenido", Toast.LENGTH_SHORT).show();
                         startActivity(i);
                         finish();
                     } else {
                         user.setText("");
                         pass.setText("");
+                        Toast.makeText(inicio.this, "Usuario o contraseña incorrectos, vuelva a intentarlo", Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(inicio.this, response.toString(), Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -89,5 +87,4 @@ public class inicio extends AppCompatActivity {
         RequestQueue lanzarPeticion = Volley.newRequestQueue(this);
         lanzarPeticion.add(pet);
     }
-
 }

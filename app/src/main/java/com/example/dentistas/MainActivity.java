@@ -20,23 +20,18 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONObject;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import global.info;
 import pojo.datos;
-import pojo.dentista;
 
 public class MainActivity extends AppCompatActivity {
     EditText nomCompleto, licencia, fechanacimiento, telefono, email, direccion, calificacion, horaapertura, horacierre, item10;
@@ -44,10 +39,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     Button guardar, limpiar;
     SharedPreferences archivo;
-
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     datos dat = new datos();
-
     Integer pos;
 
     @Override
@@ -84,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?>adapterView) {
             }
         });
-
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,39 +186,6 @@ public class MainActivity extends AppCompatActivity {
         especialidad.setSelection(0);
         Toast.makeText(this,"Entradas limpiadas",Toast.LENGTH_SHORT).show();
     }
-    private void guardar1() {
-        String nombre = nomCompleto.getText().toString();
-        String lic = licencia.getText().toString();
-        String fecha = fechanacimiento.getText().toString();
-        String telefon = telefono.getText().toString();
-        String mail = email.getText().toString();
-        String dir = direccion.getText().toString();
-        String cali = calificacion.getText().toString();
-        String especialidad = item10.getText().toString();
-        String horaApertura = horaapertura.getText().toString();
-        String horaCierre = horacierre.getText().toString();
-
-        if (nombre.isEmpty() || lic.isEmpty() || fecha.isEmpty() || telefon.isEmpty() || mail.isEmpty() ||
-                dir.isEmpty() || cali.isEmpty() || horaApertura.isEmpty() || horaCierre.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
-        } else {
-            dentista unequipo = new dentista();
-            unequipo.setNombrecompleto(nombre);
-            unequipo.setLicencia(lic);
-            unequipo.setFechanacimiento(fecha);
-            unequipo.setTelefono(telefon);
-            unequipo.setEmail(mail);
-            unequipo.setDireccion(dir);
-            unequipo.setCalificacion(cali);
-            unequipo.setEspecialidad(especialidad);
-            unequipo.setHoraapertura(horaApertura);
-            unequipo.setHoracierre(horaCierre);
-            unequipo.setPosicionSpinner(pos);
-            info.lista.add(unequipo);
-            Toast.makeText(this,"Dentista guardado exitosamente",Toast.LENGTH_SHORT).show();
-            limpiar();
-        }
-    }
     private void guardar() {
         String localhost = getString(R.string.localhost);
         String url = localhost + "registrar_dentista.php";
@@ -261,8 +220,6 @@ public class MainActivity extends AppCompatActivity {
         params.put("hora_cierre", horaCierre);
 
         JSONObject jsonObject = new JSONObject(params);
-
-        // Usar JsonObjectRequest en lugar de StringRequest
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -275,8 +232,6 @@ public class MainActivity extends AppCompatActivity {
                             if (status.equals("success")) {
                                 Toast.makeText(MainActivity.this, "Datos guardados correctamente: " + message, Toast.LENGTH_SHORT).show();
                                 limpiar(); // Limpiar los campos después de guardar
-                            } else {
-                                Toast.makeText(MainActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -290,25 +245,19 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Error al guardar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        // Añadir la solicitud a la cola de Volley
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
-
     }
-
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         super.onOptionsMenuClosed(menu);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.opc1){
@@ -316,27 +265,23 @@ public class MainActivity extends AppCompatActivity {
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc2){
-            Intent cambio = new Intent(this, autor.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc3){
-            Intent cambio = new Intent(this, contacto.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc4){
             Intent cambio = new Intent(this, MainActivity.class);
             startActivity(cambio);
         }
-        if(item.getItemId()==R.id.opc5){
+        if(item.getItemId()==R.id.opc3){
             Intent cambio = new Intent(this, modificar.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc4){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc5){
+            Intent cambio = new Intent(this, autor.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc6){
             Intent cambio = new Intent(this, ver2.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc7){
-            Intent cambio = new Intent(this, ayuda.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.wazaa){

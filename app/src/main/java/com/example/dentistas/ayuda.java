@@ -45,27 +45,23 @@ public class ayuda extends AppCompatActivity {
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc2){
-            Intent cambio = new Intent(this, autor.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc3){
-            Intent cambio = new Intent(this, contacto.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc4){
             Intent cambio = new Intent(this, MainActivity.class);
             startActivity(cambio);
         }
-        if(item.getItemId()==R.id.opc5){
+        if(item.getItemId()==R.id.opc3){
             Intent cambio = new Intent(this, modificar.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc4){
+            Intent cambio = new Intent(this, ayuda.class);
+            startActivity(cambio);
+        }
+        if(item.getItemId()==R.id.opc5){
+            Intent cambio = new Intent(this, autor.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.opc6){
             Intent cambio = new Intent(this, ver2.class);
-            startActivity(cambio);
-        }
-        if(item.getItemId()==R.id.opc7){
-            Intent cambio = new Intent(this, ayuda.class);
             startActivity(cambio);
         }
         if(item.getItemId()==R.id.wazaa){
