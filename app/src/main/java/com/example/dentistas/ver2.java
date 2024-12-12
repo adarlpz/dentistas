@@ -71,7 +71,7 @@ public class ver2 extends AppCompatActivity {
 
             // Mostrar las posiciones de los elementos eliminados
             for (int posicion : posicionesSeleccionadas) {
-                Toast.makeText(ver2.this, "Elemento eliminado en posición: " + posicion, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ver2.this, "Elemento eliminado en posición: " + posicion, Toast.LENGTH_SHORT).show();
                 eliminarDentista(posicion);
             }
         } else {
