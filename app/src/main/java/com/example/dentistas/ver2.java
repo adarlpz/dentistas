@@ -59,6 +59,9 @@ public class ver2 extends AppCompatActivity {
         }
 
         if (!itemsParaEliminar.isEmpty()) {
+            for (dentista item : itemsParaEliminar) {
+                eliminarDentista(itemsParaEliminar);
+            }
             dentistasList.removeAll(itemsParaEliminar);
             adapter.notifyDataSetChanged();
             Toast.makeText(this, "Elementos eliminados exitosamente", Toast.LENGTH_SHORT).show();
@@ -66,6 +69,34 @@ public class ver2 extends AppCompatActivity {
             Toast.makeText(this, "No has seleccionado ningún elemento para eliminar", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void eliminarDentista(List<dentista> id) {
+        String localhost = getString(R.string.localhost);
+        String url = localhost + "eliminar_dentista.php?id=" + id;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String status = response.getString("status");
+                        if (!status.equals("success")) {
+                            String message = response.getString("message");
+                            Toast.makeText(ver2.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ver2.this, "Error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Log.e("VolleyError", "Error en la solicitud: " + error.getMessage());
+                    Toast.makeText(ver2.this, "Error de red: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
     private void cargarDatos() {
         String localhost = getString(R.string.localhost);
         String url = localhost + "obtener_dentistas.php";
