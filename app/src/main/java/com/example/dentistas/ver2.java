@@ -1,3 +1,4 @@
+
 package com.example.dentistas;
 
 import android.content.Context;
@@ -51,26 +52,33 @@ public class ver2 extends AppCompatActivity {
     }
     public void del(View view) {
         List<dentista> itemsParaEliminar = new ArrayList<>();
+        List<Integer> posicionesSeleccionadas = new ArrayList<>();
 
-        for (dentista item : dentistasList) {
+        for (int i = 0; i < dentistasList.size(); i++) {
+            dentista item = dentistasList.get(i);
             if (item.isChecked()) {
                 itemsParaEliminar.add(item);
+                posicionesSeleccionadas.add(i);
             }
         }
-
         if (!itemsParaEliminar.isEmpty()) {
             for (dentista item : itemsParaEliminar) {
-                eliminarDentista(itemsParaEliminar);
+                // eliminarDentista(item); // Asegúrate de implementar este método correctamente
             }
             dentistasList.removeAll(itemsParaEliminar);
             adapter.notifyDataSetChanged();
-            Toast.makeText(this, "Elementos eliminados exitosamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ver2.this, "Elementos eliminados exitosamente", Toast.LENGTH_SHORT).show();
+
+            // Mostrar las posiciones de los elementos eliminados
+            for (int posicion : posicionesSeleccionadas) {
+                Toast.makeText(ver2.this, "Elemento eliminado en posición: " + posicion, Toast.LENGTH_SHORT).show();
+                eliminarDentista(posicion);
+            }
         } else {
-            Toast.makeText(this, "No has seleccionado ningún elemento para eliminar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ver2.this, "No has seleccionado ningún elemento para eliminar", Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void eliminarDentista(List<dentista> id) {
+    private void eliminarDentista(int id) {
         String localhost = getString(R.string.localhost);
         String url = localhost + "eliminar_dentista.php?id=" + id;
 
@@ -95,8 +103,6 @@ public class ver2 extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
     }
-
-
     private void cargarDatos() {
         String localhost = getString(R.string.localhost);
         String url = localhost + "obtener_dentistas.php";

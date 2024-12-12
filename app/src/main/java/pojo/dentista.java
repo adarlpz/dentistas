@@ -21,6 +21,16 @@ public class dentista {
         this.posicionSpinner = posicionSpinner;
     }
 
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private boolean isChecked;
     public String getFechanacimiento() {
         return fechanacimiento;
