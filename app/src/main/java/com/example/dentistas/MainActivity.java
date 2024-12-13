@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         Calendar actual = Calendar.getInstance();
         hr = actual.get(Calendar.HOUR_OF_DAY);
         min = actual.get(Calendar.MINUTE);
-        TimePickerDialog tpd = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog tpd = new TimePickerDialog(this, R.style.CustomTimePickerDialog, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hourofday, int minute) {
                 dat.minutos = minute;
