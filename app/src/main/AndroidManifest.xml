@@ -31,7 +31,7 @@
             android:name=".modificar"
             android:exported="false" />
         <activity
-            android:name=".inicio"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".contacto"
@@ -43,7 +43,7 @@
             android:name=".autor"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".inicio"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
